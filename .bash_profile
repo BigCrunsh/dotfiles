@@ -22,6 +22,9 @@ fi
 GIT_PROMPT_THEME=Single_line_Solarized
 source ~/.bash-git-prompt/gitprompt.sh
 
+# docker
+$(boot2docker shellinit 2> /dev/null)
+
 # includes
 
 source ~/.common.shellrc
