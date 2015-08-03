@@ -18,7 +18,10 @@ if tty 1>/dev/null
     bind '"\e[B"':history-search-forward
 fi
 
+# prompt
+GIT_PROMPT_THEME=Single_line_Solarized
+source ~/.bash-git-prompt/gitprompt.sh
+
 # includes
 
-source ~/.bash_prompt
 source ~/.common.shellrc
