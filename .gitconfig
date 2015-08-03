@@ -1,0 +1,29 @@
+[push]
+  default = simple
+[pull]
+  default = current
+[user]
+  name = Christoph Sawade
+  email = christoph@sawade.me
+[core]
+  quotepath = false
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+[diff]
+  rename = copy
+  color = auto
+[apply]
+  whitespace = strip
+[pager]
+  color = true
+[alias]
+  co = "checkout"
+  ci = "commit"
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+[branch]
+  autosetuprebase = always
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+
