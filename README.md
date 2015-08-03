@@ -8,10 +8,10 @@ Clone the repository into
 
     git clone git@github.com:bigcrunsh/dotfiles ~/dotfiles
 
-    Symlink dotfiles into your home directory
+Symlink dotfiles into your home directory
 
-        cd ~/dotfiles
-            ./pin
+    cd ~/dotfiles
+    ./pin
 
 ## Credits
 
