@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+# link dotfiles
+ln -sfv $(echo $(pwd)/.[^.]* | xargs -n1 | grep -v '\.git$' | xargs) ~
+

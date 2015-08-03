@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/Users/christoph/Dropbox/Apps/1Password/1Password.agilekeychain'
+let g:netrw_dirhist_2='/Users/christoph/Dropbox/Apps/1Password/1Password.agilekeychain/data'
+let g:netrw_dirhist_3='/Users/christoph/.common'
+let g:netrw_dirhist_4='/Users/christoph/src/github/bigcrunsh/dotfiles'
