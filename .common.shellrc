@@ -25,3 +25,6 @@ alias vi='vim'
 # base
 export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
+# osx
+uname -a | grep "^Darwin" >/dev/null && source ~/.osx
+
