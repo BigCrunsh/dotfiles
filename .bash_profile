@@ -54,6 +54,11 @@ GIT_PROMPT_THEME=Single_line_Solarized
 source ~/.bash-git-prompt/gitprompt.sh
 
 # docker
+dockerStatus=`docker-machine ls | grep default | awk '{ print $3 }'`
+if [ $? -ne 0 ] || [ $dockerStatus != 'Running' ] ; then
+  echo start docker machine
+  docker-machine start default 1> /dev/null
+fi
 eval "$(docker-machine env default)"
 
 # gnu tools
