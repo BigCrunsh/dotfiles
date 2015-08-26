@@ -1,3 +1,9 @@
+# use always tmux
+
+if [[ ! $TERM =~ screen ]]; then
+    exec tmux
+fi
+
 # base
 export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 export JAVA_HOME=$(/usr/libexec/java_home)
