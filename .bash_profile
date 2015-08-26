@@ -34,7 +34,7 @@ source ~/.bash-git-prompt/gitprompt.sh
 
 # docker
 
-$(boot2docker shellinit 2> /dev/null)
+eval "$(docker-machine env default)"
 
 # includes
 
