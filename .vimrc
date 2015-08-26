@@ -53,7 +53,13 @@ set softtabstop=2
 set tabstop=2
 set expandtab
 
+" dangling spaces
+
+autocmd BufWritePre * :%s/\s\+$//e " remove dangling spaces
+match ErrorMsg /\s\+$/             " highlight dangling spaces
+
 " restore cursor to saved position
+
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
 " solarized
