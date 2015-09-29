@@ -1,5 +1,4 @@
-# use always tmux
-
+# start tmux by default
 if [[ ! $TERM =~ screen ]]; then
     exec tmux
 fi
@@ -53,6 +52,13 @@ for c in ~/.completions/*; do source $c; done
 GIT_PROMPT_THEME=Single_line_Solarized
 source ~/.bash-git-prompt/gitprompt.sh
 
+# gnu tools
+if which gls > /dev/null; then alias ls=gls; fi
+if which gdircolors > /dev/null; then alias dircolors=gdircolors; fi
+
+# soundcloud specific stuff
+source ~/.soundcloud
+
 # docker
 dockerStatus=`docker-machine ls | grep default | awk '{ print $3 }'`
 if [ $? -ne 0 ] || [ $dockerStatus != 'Running' ] ; then
@@ -60,10 +66,3 @@ if [ $? -ne 0 ] || [ $dockerStatus != 'Running' ] ; then
   docker-machine start default 1> /dev/null
 fi
 eval "$(docker-machine env default)"
-
-# gnu tools
-if which gls > /dev/null; then alias ls=gls; fi
-if which gdircolors > /dev/null; then alias dircolors=gdircolors; fi
-
-# soundcloud specific stuff
-source ~/.soundcloud
