@@ -5,11 +5,17 @@ fi
 
 # base
 export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-export JAVA_HOME=$(/usr/libexec/java_home)
 export LC_CTYPE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR="vim"
 export TERM=screen-256color # xterm-256color
+
+# java
+export JAVA_HOME=$(/usr/libexec/java_home)
+
+# go
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=~/src/gocode
 
 # colors
 export CLICOLOR=1
