@@ -52,6 +52,9 @@ set shiftwidth=2            " number of spaces to use for autoindenting
 set softtabstop=2
 set tabstop=2
 
+" mouse support
+set mouse=a
+
 " dangling spaces
 
 autocmd BufWritePre * :%s/\s\+$//e " remove dangling spaces
