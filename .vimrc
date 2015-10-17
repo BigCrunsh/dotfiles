@@ -2,6 +2,9 @@
 
 call pathogen#infect()
 
+" json highlighting
+autocmd BufNewFile,BufRead *.json set ft=javascript
+
 " basics
 
 set encoding=utf-8
