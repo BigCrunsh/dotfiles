@@ -5,3 +5,6 @@ set -e
 # link dotfiles
 ln -sfv $(echo $(pwd)/.[^.]* | xargs -n1 | grep -v '\.git$' | xargs) ~
 
+# link binaries
+mkdir -p ~/bin
+ln -sfv $(pwd)/bin/* ~/bin

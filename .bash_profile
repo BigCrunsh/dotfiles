@@ -31,9 +31,6 @@ alias less='less -r' # interpret color
 alias ll='ls --color -bF'
 alias tree='tree -C' # color
 alias vi='vim'
-gitdiffnb() {
-		diff <(git show HEAD:$1 | jq .cells[].source) <(cat $1 | jq .cells[].source) | vim -R -
-}
 
 # history
 shopt -s histappend

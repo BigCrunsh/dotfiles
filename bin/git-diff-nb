@@ -1,0 +1,15 @@
+#!/bin/bash
+
+usage() {
+  echo "Show source code differences in an ipython notebook between local and"
+  echo "HEAD git version."
+  echo
+  echo "Usage: $0 <notebook>.ipynb"
+}
+
+if [ $# -eq 0 ]
+  then
+    usage && exit 1
+fi
+
+diff <(git show HEAD:$1 | jq .cells[].source) <(cat $1 | jq .cells[].source) | vim -R -
