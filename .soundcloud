@@ -1,6 +1,0 @@
-#!/bin/sh
-
-# hadoop
-
-export PATH="$HOME/src/github.com/soundcloud/discovery-hadoop/bin/:$PATH"
-
