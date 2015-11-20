@@ -1,30 +1,31 @@
 [push]
-  default = simple
+	default = simple
 [pull]
-  default = current
+	default = current
 [user]
-  name = Christoph Sawade
-  email = christoph@sawade.me
+	name = Christoph Sawade
+	email = christoph@sawade.me
 [core]
-  quotepath = false
-  excludesfile = ~/.gitignore
+	quotepath = false
+	excludesfile = ~/.gitignore
 [color]
-  diff = auto
-  status = auto
-  branch = auto
+	diff = auto
+	status = auto
+	branch = auto
 [diff]
-  rename = copy
-  color = auto
+	rename = copy
+	color = auto
 [apply]
-  whitespace = strip
+	whitespace = strip
 [pager]
-  color = true
+	color = true
 [alias]
-  co = "checkout"
-  ci = "commit"
-  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	co = "checkout"
+	ci = "commit"
+	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
 [branch]
-  autosetuprebase = always
+	autosetuprebase = always
 [url "git@github.com:"]
-  insteadOf = https://github.com/
-
+	insteadOf = https://github.com/
+[init]
+	templatedir = ~/.git-templates
