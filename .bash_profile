@@ -31,6 +31,7 @@ alias less='less -r' # interpret color
 alias ll='ls --color -bF'
 alias tree='tree -C' # color
 alias vi='vim'
+alias vim='/usr/local/bin/vim' # don't use OSX built-in vim
 
 # history
 shopt -s histappend
