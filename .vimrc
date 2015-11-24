@@ -46,6 +46,9 @@ set term=screen-256color
 set textwidth=80
 set colorcolumn=+1
 
+" allow backspacing
+set backspace=indent,eol,start
+
 " indentation
 
 set wrap
