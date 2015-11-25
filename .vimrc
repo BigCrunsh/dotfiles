@@ -22,6 +22,7 @@ endif
 " search and navigation
 
 set ignorecase              " makes / searches case insensitive
+set hlsearch                " highlight search matches
 
 " safety
 
