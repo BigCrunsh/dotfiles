@@ -2,4 +2,7 @@
 .idea/
 .vim/.netrwhist
 
+# python
+*.py[cod]
+
 .soundcloud
