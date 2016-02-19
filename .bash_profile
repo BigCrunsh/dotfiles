@@ -4,11 +4,14 @@ if [[ ! $TERM =~ screen ]]; then
 fi
 
 # base
-export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/local/bin:/opt/local/sbin
 export LC_CTYPE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR="vim"
 export TERM=screen-256color # xterm-256color
+
+# autojump
+[[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 
 # java
 export JAVA_HOME=$(/usr/libexec/java_home)
