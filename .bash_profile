@@ -68,12 +68,3 @@ if which gdircolors > /dev/null; then alias dircolors=gdircolors; fi
 
 # soundcloud specific stuff
 source ~/.soundcloud
-
-# docker
-dockerMachine=`docker-machine ls | grep Running | head -1 | awk '{ print $1 }'`
-if [ $? -ne 0 ] || [ -z "$dockerMachine" ]; then
-  dockerMachine=default
-  echo start docker machine
-  docker-machine start $dockerMachine 1> /dev/null
-fi
-eval "$(docker-machine env $dockerMachine)"
