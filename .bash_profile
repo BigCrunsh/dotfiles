@@ -4,7 +4,7 @@ if [[ ! $TERM =~ screen ]]; then
 fi
 
 # base
-export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/local/bin:/opt/local/sbin
+export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/local/bin:/opt/local/sbin:~/src/gocode/bin/
 export LC_CTYPE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR="vim"
