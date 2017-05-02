@@ -58,6 +58,8 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
 fi
 for c in ~/.completions/*; do source $c; done
 
+source <(sc completion bash)
+
 # prompt
 GIT_PROMPT_THEME=Single_line_Solarized
 source ~/.bash-git-prompt/gitprompt.sh
