@@ -2,6 +2,7 @@
 	default = current
 [pull]
 	default = current
+	rebase = true
 [user]
 	name = Christoph Sawade
 	email = christoph@sawade.me
