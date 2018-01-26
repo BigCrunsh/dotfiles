@@ -64,6 +64,14 @@ source <(sc completion bash)
 GIT_PROMPT_THEME=Single_line_Solarized
 source ~/.bash-git-prompt/gitprompt.sh
 
+# ssh agent
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval `ssh-agent`
+  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+ssh-add -l | grep "The agent has no identities" && ssh-add
+
 # gnu tools
 if which gls > /dev/null; then alias ls=gls; fi
 if which gdircolors > /dev/null; then alias dircolors=gdircolors; fi
