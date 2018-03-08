@@ -1,7 +1,7 @@
 # This is an alternative approach. Single line in git repo.
 # Theme optimised for Terminus and PowerLine compatible fonts.
 # This theme for gitprompt.sh is optimized for the "Solarized Dark" and "Solarized Light" color schemes
-# without the indicator of the last command state 
+# without the indicator of the last command state
 # tweaked for Ubuntu terminal fonts
 
 unset_git_prompt_colors() {
@@ -33,7 +33,7 @@ unset_git_prompt_colors() {
 
 define_helpers()
 {
-  PathShort="${BoldBlue}\u:${Cyan}\W"
+  PathShort="${BoldBlue}\u@${HOSTNAME%%.*}:${Cyan}\W"
 }
 
 define_undefined_git_prompt_colors() {
