@@ -33,7 +33,12 @@ unset_git_prompt_colors() {
 
 define_helpers()
 {
-  PathShort="${BoldBlue}\u@${HOSTNAME%%.*}:${Cyan}\W"
+  host=${HOSTNAME%%.*}
+  if [ "$host" == "csawade-m01" ]; then
+    PathShort="${BoldBlue}\u:${Cyan}\W"
+	else
+    PathShort="${BoldBlue}\u@${HOSTNAME%%.*}:${Cyan}\W"
+	fi
 }
 
 define_undefined_git_prompt_colors() {
