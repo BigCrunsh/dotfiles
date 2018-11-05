@@ -1,0 +1,44 @@
+#!/bin/bash
+
+usage() {
+  echo "Delete local branches when they have been merged into master."
+  echo
+  echo "Usage: $(basename $0) [-h]"
+}
+
+while getopts 'h' opt
+do
+  case "${opt}" in
+    h) usage && exit 0;;
+  esac
+done
+
+REMOTE="${REMOTE:-origin}"
+filter='^(\* .*|master|stable|release-.*)$'
+
+cleanup() {
+  local branch="$1"
+
+  git branch -D "$branch"
+  git branch --all | grep -q "remotes/$REMOTE/$branch" && git push --delete "$REMOTE" "$branch"
+}
+
+git fetch --all --prune --quiet
+
+git branch --list --merged | while read -r branch; do
+  if [[ "$branch" =~ $filter ]]; then
+    continue
+  fi
+
+  cleanup "$branch"
+done
+
+git branch --list --no-merged | while read -r branch; do
+  if [[ "$branch" =~ $filter ]]; then
+    continue
+  fi
+
+  if git cherry origin/master "$branch" | grep -v -q '^+'; then
+    cleanup "$branch"
+  fi
+done
