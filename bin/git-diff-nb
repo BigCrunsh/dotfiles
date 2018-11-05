@@ -4,7 +4,7 @@ usage() {
   echo "Show source code differences in an ipython notebook between local and"
   echo "HEAD git version."
   echo
-  echo "Usage: $0 <notebook>.ipynb"
+  echo "Usage: $(basename $0) <notebook>.ipynb"
 }
 
 if [ $# -eq 0 ]
