@@ -59,8 +59,6 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
 fi
 for c in ~/.completions/*; do source $c; done
 
-source <(sc completion bash)
-
 # prompt
 GIT_PROMPT_THEME=Single_line_Solarized
 source ~/.bash-git-prompt/gitprompt.sh
@@ -76,6 +74,3 @@ ssh-add -l | grep "The agent has no identities" && ssh-add
 # gnu tools
 if which gls > /dev/null; then alias ls=gls; fi
 if which gdircolors > /dev/null; then alias dircolors=gdircolors; fi
-
-# soundcloud specific stuff
-source ~/.soundcloud
