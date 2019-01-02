@@ -2,6 +2,16 @@
 
 My personal configs.
 
+## Prerequisite
+
+The dotfiles require the following tools
+
+- [homebrew](https://brew.sh/)
+- tmux (via brew)
+- vim (via brew)
+- hub (via brew)
+- java jdk
+
 ## Installation
 
 Clone the repository into
