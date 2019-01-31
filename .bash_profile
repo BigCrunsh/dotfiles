@@ -36,6 +36,8 @@ alias tree='tree -C' # color
 alias vi='vim'
 alias vim='/usr/local/bin/vim' # don't use OSX built-in vim
 alias git=hub
+alias python=python3
+alias pip=pip3
 
 # history
 shopt -s histappend
