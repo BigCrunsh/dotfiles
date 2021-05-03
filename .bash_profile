@@ -34,7 +34,6 @@ alias less='less -r' # interpret color
 alias ll='ls --color -bF'
 alias tree='tree -C' # color
 alias vi='vim'
-alias vim='/usr/local/bin/vim' # don't use OSX built-in vim
 alias git=hub
 alias python=python3
 alias pip=pip3
@@ -76,3 +75,11 @@ ssh-add -l | grep "The agent has no identities" && ssh-add
 # gnu tools
 if which gls > /dev/null; then alias ls=gls; fi
 if which gdircolors > /dev/null; then alias dircolors=gdircolors; fi
+
+# initialize pyenv and poetry
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+export PATH="$HOME/.poetry/bin:$PATH"
+export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
