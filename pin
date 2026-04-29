@@ -65,11 +65,13 @@ for f in "$REPO/bin/"*; do
   ln -sfn "$f" "$HOME/bin/$(basename "$f")"
 done
 
-# 4. Bootstrap tpm (tmux plugin manager)
+# 4. Bootstrap tpm and install tmux plugins
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
   log "Cloning tpm..."
   git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
+log "Installing tmux plugins..."
+"$HOME/.tmux/plugins/tpm/bin/install_plugins" >/dev/null
 
 # 5. Register nbdime as the git diff/merge driver for .ipynb
 if command -v nbdime >/dev/null 2>&1; then
@@ -92,5 +94,4 @@ log "Done."
 echo
 echo "Next steps:"
 echo "  1. Open a new terminal so the new shell config loads."
-echo "  2. Inside tmux, press 'prefix + I' (Ctrl-b then Shift-i) to install tmux plugins."
-echo "  3. In 1Password: Settings -> Developer -> toggle 'Use the SSH agent'."
+echo "  2. In 1Password: Settings -> Developer -> toggle 'Use the SSH agent'."

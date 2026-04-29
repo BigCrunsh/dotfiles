@@ -17,7 +17,7 @@ The script is idempotent — safe to re-run.
 1. Installs Homebrew if missing.
 2. Installs packages from [`Brewfile`](Brewfile).
 3. Symlinks dotfiles into `~`. Existing real files are backed up to `*.backup.<timestamp>`.
-4. Bootstraps [tpm](https://github.com/tmux-plugins/tpm) (tmux plugin manager).
+4. Bootstraps [tpm](https://github.com/tmux-plugins/tpm) and installs tmux plugins.
 5. Registers [nbdime](https://nbdime.readthedocs.io/) as the git diff/merge driver for `.ipynb`.
 6. Sets `zsh` as the login shell.
 
@@ -34,7 +34,6 @@ The script is idempotent — safe to re-run.
 ## Manual steps after bootstrap
 
 - Open a new terminal so the new shell config loads.
-- Inside tmux, press `prefix + I` (default prefix is `Ctrl-b`, then `Shift-i`) to install tmux plugins.
 - In 1Password → Settings → Developer → toggle **Use the SSH agent**.
 - For per-machine SSH host overrides, create `~/.ssh/config.local` (gitignored).
 
