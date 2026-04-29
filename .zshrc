@@ -38,13 +38,17 @@ autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 
-# ---- prompt: user@host  cwd  (git-branch) % ----
+# ---- prompt: user [@fqdn if remote]  last-2-dirs  (git-branch) % ----
 autoload -Uz vcs_info
 precmd() { vcs_info }
 zstyle ':vcs_info:git:*' formats ' (%b)'
 zstyle ':vcs_info:git:*' actionformats ' (%b|%a)'
 setopt PROMPT_SUBST
-PROMPT='%n@%m %F{blue}%~%f%F{green}${vcs_info_msg_0_}%f %# '
+if [[ -n $SSH_CONNECTION || -n $SSH_TTY ]]; then
+    PROMPT='%F{yellow}%n@%M%f %F{blue}%2~%f%F{green}${vcs_info_msg_0_}%f %# '
+else
+    PROMPT='%n %F{blue}%2~%f%F{green}${vcs_info_msg_0_}%f %# '
+fi
 
 # ---- pyenv ----
 if command -v pyenv >/dev/null; then
