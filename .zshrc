@@ -1,7 +1,8 @@
 # ---- tmux ----
-# Auto-attach inside a real terminal; harmless inside an existing tmux/screen session.
-if [[ ! $TERM =~ screen ]] && command -v tmux >/dev/null; then
-    exec tmux
+# Auto-attach when not already inside tmux. No exec, so a tmux failure
+# falls through to a normal zsh prompt instead of killing the terminal.
+if [[ -z $TMUX ]] && command -v tmux >/dev/null; then
+    tmux attach || tmux new-session
 fi
 
 # ---- PATH / locale / editor ----
