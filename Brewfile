@@ -13,5 +13,6 @@ brew "pyenv"
 brew "poetry"
 
 # Apps
+cask "google-cloud-sdk"
 cask "iterm2"
 cask "sublime-text"

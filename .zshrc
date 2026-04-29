@@ -59,3 +59,8 @@ fi
 if command -v zoxide >/dev/null; then
     eval "$(zoxide init zsh)"
 fi
+# ---- google cloud sdk ----
+if command -v brew >/dev/null && [ -f "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc" ]; then
+    source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+    source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+fi
