@@ -1,89 +1,72 @@
-" pathogen
-
-call pathogen#infect()
-
-" json highlighting
-autocmd BufNewFile,BufRead *.json set ft=javascript
-
 " basics
-
 set encoding=utf-8
 set history=1000
-set nocompatible            " don't need vi compatibility
+set nocompatible
 
-" work with system clipboard
-
+" system clipboard
 if has('mac')
   set clipboard=unnamed
 elseif has('unix')
   set clipboard=unnamedplus
 endif
 
-" search and navigation
+" search
+set ignorecase
+set smartcase
+set hlsearch
+set incsearch
 
-set ignorecase              " makes / searches case insensitive
-set hlsearch                " highlight search matches
-
-" safety
-
+" persistent undo
+if !isdirectory($HOME . '/.vim/undo')
+  call mkdir($HOME . '/.vim/undo', 'p')
+endif
 set undofile
+set undodir=~/.vim/undo
 set noswapfile
-set nobackup                " no backup after closing
-set nowritebackup           " no backup while working
-set undodir=/tmp/.vim_undo
+set nobackup
+set nowritebackup
 
 " ui
-
-set title                   " show title of file in menu bar
+set title
 set ruler
-set number                  " numbers on the left
+set number
 set relativenumber
-set scrolloff=1             " breathing room for zt
+set scrolloff=1
 set laststatus=2
-set term=screen-256color
 
 " column width
-
 set textwidth=80
 set colorcolumn=+1
 
-" allow backspacing
+" backspacing
 set backspace=indent,eol,start
 
 " indentation
-
 set wrap
 set formatoptions=qrn1
-set autoindent              " always set autoindenting on
-set shiftwidth=2            " number of spaces to use for autoindenting
+set autoindent
+set expandtab
+set shiftwidth=2
 set softtabstop=2
-set tabstop=2               " how many columns a tab counts
+set tabstop=2
 
-" file type specifics
-
+" filetypes
 filetype plugin indent on
 
-au FileType python setlocal shiftwidth=2
+" python: 4-space indent (PEP 8)
+autocmd FileType python setlocal shiftwidth=4 softtabstop=4 tabstop=4
 
-" mouse support
+" mouse
 set mouse=a
 
-" dangling spaces
+" highlight trailing whitespace (don't auto-strip)
+match ErrorMsg /\s\+$/
 
-autocmd BufWritePre * :%s/\s\+$//e " remove dangling spaces
-match ErrorMsg /\s\+$/             " highlight dangling spaces
+" restore cursor to last position
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
-" restore cursor to saved position
-
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-
-" solarized
-
+" colors: solarized light
 syntax enable
-set background=dark
+set background=light
 let g:solarized_termcolors=256
 colorscheme solarized
-
-" go
-set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
-autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow

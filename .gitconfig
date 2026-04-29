@@ -1,32 +1,70 @@
-[push]
-	default = current
-[pull]
-	default = current
-	rebase = true
 [user]
 	name = Christoph Sawade
 	email = christoph@sawade.me
+
+# Use work email for repos under github.com/fitanalytics
+[includeIf "gitdir:~/src/github.com/fitanalytics/"]
+	path = ~/.gitconfig-work
+[includeIf "hasconfig:remote.*.url:git@github.com:fitanalytics/**"]
+	path = ~/.gitconfig-work
+
 [core]
 	quotepath = false
 	excludesfile = ~/.gitignore
+	pager = delta
+
+[init]
+	defaultBranch = main
+
+[push]
+	default = current
+
+[pull]
+	rebase = true
+
+[branch]
+	autosetuprebase = always
+
+[fetch]
+	prune = true
+
+[rebase]
+	autoStash = true
+
+[merge]
+	conflictStyle = zdiff3
+
+[rerere]
+	enabled = true
+
+[diff]
+	rename = copies
+	algorithm = histogram
+	color = auto
+
+[apply]
+	whitespace = strip
+
 [color]
 	diff = auto
 	status = auto
 	branch = auto
-[diff]
-	rename = copy
-	color = auto
-[apply]
-	whitespace = strip
+
 [pager]
 	color = true
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	light = true
+	line-numbers = true
+
 [alias]
-	co = "checkout"
-	ci = "commit"
+	co = checkout
+	ci = commit
 	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
-[branch]
-	autosetuprebase = always
+
 [url "git@github.com:"]
 	insteadOf = https://github.com/
-[init]
-	templatedir = ~/.git-templates

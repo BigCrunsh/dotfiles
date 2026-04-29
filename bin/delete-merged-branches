@@ -1,44 +1,70 @@
 #!/bin/bash
+set -euo pipefail
 
 usage() {
-  echo "Delete local branches when they have been merged into master."
-  echo
-  echo "Usage: $(basename $0) [-h]"
+  cat <<EOF
+Delete local branches that have been merged into the default branch.
+
+Usage: $(basename "$0") [-n] [-h]
+
+Options:
+  -n    Dry run; print what would be deleted, don't delete.
+  -h    Show this help.
+
+Notes:
+  - Deletes LOCAL branches only.
+  - Skips the current branch, the default branch, and protected names
+    (stable, develop, release-*).
+  - Uses 'git branch -d', which refuses to delete branches with unmerged
+    commits. To force, run 'git branch -D <branch>' manually.
+EOF
 }
 
-while getopts 'h' opt
-do
-  case "${opt}" in
-    h) usage && exit 0;;
+dry_run=0
+while getopts 'nh' opt; do
+  case "$opt" in
+    n) dry_run=1 ;;
+    h) usage; exit 0 ;;
+    *) usage >&2; exit 1 ;;
   esac
 done
 
-REMOTE="${REMOTE:-origin}"
-filter='^(\* .*|master|stable|release-.*)$'
+# Detect default branch via origin/HEAD; fall back to main, then master.
+default_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null \
+  | sed 's@^origin/@@' || true)
+if [ -z "$default_branch" ]; then
+  for candidate in main master; do
+    if git show-ref --verify --quiet "refs/heads/$candidate"; then
+      default_branch=$candidate
+      break
+    fi
+  done
+fi
+if [ -z "$default_branch" ]; then
+  echo "error: could not determine default branch" >&2
+  exit 1
+fi
 
-cleanup() {
-  local branch="$1"
-
-  git branch -D "$branch"
-  git branch --all | grep -q "remotes/$REMOTE/$branch" && git push --delete "$REMOTE" "$branch"
-}
+current_branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
 
 git fetch --all --prune --quiet
 
-git branch --list --merged | while read -r branch; do
-  if [[ "$branch" =~ $filter ]]; then
-    continue
-  fi
+protected="^($default_branch|stable|develop|release-.*)$"
 
-  cleanup "$branch"
-done
+merged=$(git branch --merged "$default_branch" --format='%(refname:short)' \
+  | grep -Ev "$protected" \
+  | grep -Fxv "$current_branch" \
+  | sed '/^$/d' || true)
 
-git branch --list --no-merged | while read -r branch; do
-  if [[ "$branch" =~ $filter ]]; then
-    continue
-  fi
+if [ -z "$merged" ]; then
+  echo "No merged branches to delete."
+  exit 0
+fi
 
-  if git cherry origin/master "$branch" | grep -v -q '^+'; then
-    cleanup "$branch"
+while IFS= read -r branch; do
+  if [ "$dry_run" -eq 1 ]; then
+    echo "[dry-run] would delete: $branch"
+  else
+    git branch -d "$branch"
   fi
-done
+done <<< "$merged"

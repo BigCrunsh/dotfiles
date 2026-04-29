@@ -1,10 +1,96 @@
 #!/bin/bash
+set -euo pipefail
 
-set -e
+REPO="$(cd "$(dirname "$0")" && pwd)"
 
-# link dotfiles
-ln -sfv $(echo $(pwd)/.[^.]* | xargs -n1 | grep -v '\.git$' | xargs) ~
+log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 
-# link binaries
-mkdir -p ~/bin
-ln -sfv $(pwd)/bin/* ~/bin
+if [ "$(uname -s)" != "Darwin" ]; then
+  echo "error: this dotfiles bundle is macOS-only" >&2
+  exit 1
+fi
+
+# 1. Install Homebrew if missing
+if ! command -v brew >/dev/null 2>&1; then
+  log "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Ensure brew is on PATH inside this script (Apple Silicon vs Intel)
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# 2. Install packages from Brewfile
+log "Installing Brewfile packages..."
+brew bundle --file="$REPO/Brewfile"
+
+# 3. Symlink dotfiles (backing up any existing non-symlink target)
+backup() {
+  local target="$1"
+  if [ -e "$target" ] && [ ! -L "$target" ]; then
+    local b="$target.backup.$(date +%Y%m%d-%H%M%S)"
+    mv "$target" "$b"
+    echo "  backed up $target -> $b"
+  fi
+}
+
+link() {
+  local src="$REPO/$1"
+  local dst="$HOME/$2"
+  mkdir -p "$(dirname "$dst")"
+  backup "$dst"
+  ln -sfn "$src" "$dst"
+  echo "  $dst -> $src"
+}
+
+log "Linking dotfiles..."
+link .zshrc          .zshrc
+link .tmux.conf      .tmux.conf
+link .vimrc          .vimrc
+link .gitconfig      .gitconfig
+link .gitconfig-work .gitconfig-work
+link .gitignore      .gitignore
+link .ssh/config     .ssh/config
+
+# vim colors directory (keep ~/.vim itself as a real dir so undo files can live there)
+mkdir -p "$HOME/.vim"
+ln -sfn "$REPO/.vim/colors" "$HOME/.vim/colors"
+
+# bin scripts
+mkdir -p "$HOME/bin"
+for f in "$REPO/bin/"*; do
+  ln -sfn "$f" "$HOME/bin/$(basename "$f")"
+done
+
+# 4. Bootstrap tpm (tmux plugin manager)
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  log "Cloning tpm..."
+  git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+fi
+
+# 5. Register nbdime as the git diff/merge driver for .ipynb
+if command -v nbdime >/dev/null 2>&1; then
+  log "Enabling nbdime git integration..."
+  nbdime config-git --enable --global >/dev/null
+fi
+
+# 6. Set zsh as the login shell
+zsh_path=$(command -v zsh)
+login_shell=$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}') || login_shell=""
+if [ "$login_shell" != "$zsh_path" ]; then
+  log "Setting login shell to $zsh_path..."
+  if ! grep -qx "$zsh_path" /etc/shells; then
+    echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
+  fi
+  chsh -s "$zsh_path" || echo "  warning: chsh failed; run 'chsh -s $zsh_path' manually" >&2
+fi
+
+log "Done."
+echo
+echo "Next steps:"
+echo "  1. Open a new terminal so the new shell config loads."
+echo "  2. Inside tmux, press 'prefix + I' (Ctrl-b then Shift-i) to install tmux plugins."
+echo "  3. In 1Password: Settings -> Developer -> toggle 'Use the SSH agent'."

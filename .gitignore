@@ -1,8 +1,13 @@
+# macOS
 .DS_Store
+
+# editors
 .idea/
+.vscode/
 .vim/.netrwhist
+
+# claude code
+.claude/
 
 # python
 *.py[cod]
-
-.soundcloud
