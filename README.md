@@ -67,7 +67,7 @@ Most useful shortcuts in this setup. **Bold** marks custom bindings from this re
 
 > **Alt = Option (⌥)** on macOS. In iTerm: Settings → Profiles → Keys → "Left Option key acts as: Esc+" to enable. Otherwise `Esc` then the key works as a substitute (`Esc B` = `Alt-B`).
 
-### tmux (prefix = `Ctrl-B`)
+### tmux (prefix = `Ctrl-A`)
 
 Press prefix, **release**, then the key — it's a sequence, not a chord.
 
