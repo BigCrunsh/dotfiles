@@ -11,6 +11,8 @@ brew "tree"
 brew "zoxide"
 brew "pyenv"
 brew "poetry"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 
 # Apps
 cask "google-cloud-sdk"

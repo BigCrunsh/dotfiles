@@ -23,7 +23,7 @@ The script is idempotent — safe to re-run.
 
 ## What's inside
 
-- **zsh** — minimal config, prefix-aware history search, `vcs_info` git prompt
+- **zsh** — robbyrussell-style prompt with venv / git status / command-duration / SSH-host indicators, prefix-aware history search, [autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) and [syntax highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) plugins
 - **tmux** — vim-style bindings, mouse on, [catppuccin](https://github.com/catppuccin/tmux) (latte) theme via tpm
 - **vim** — solarized light, persistent undo, sane defaults; no plugin manager (Vim 8+ native packages)
 - **git** — modern defaults (`zdiff3` conflicts, `autoStash`, `rerere`, histogram diff), [delta](https://github.com/dandavison/delta) pager, work-email override via `includeIf`

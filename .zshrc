@@ -38,17 +38,81 @@ autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 
-# ---- prompt: user [@fqdn if remote]  last-2-dirs  (git-branch) % ----
+# ---- prompt: robbyrussell-style + venv + indicators + duration ----
+# Shape:   (venv) ➜  basename [@host on SSH] git:(branch) ✗ … ⚑1 ↑2 [bg N]
+# Right:   duration of the previous command if it took ≥ 2s
+# Git indicators (only shown when applicable):
+#   ✗ unstaged   ● staged    … untracked   ⚑N stashes   ↑N/↓N ahead/behind
+zmodload zsh/datetime
 autoload -Uz vcs_info
-precmd() { vcs_info }
-zstyle ':vcs_info:git:*' formats ' (%b)'
-zstyle ':vcs_info:git:*' actionformats ' (%b|%a)'
+
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' stagedstr   '_S_'   # placeholder; consumed by hook
+zstyle ':vcs_info:*' unstagedstr '_U_'   # placeholder; consumed by hook
+zstyle ':vcs_info:git:*' formats       ' %F{blue}git:(%F{red}%b%F{blue})%f%m'
+zstyle ':vcs_info:git:*' actionformats ' %F{blue}git:(%F{red}%b|%F{yellow}%a%F{blue})%f%m'
+
++vi-git-indicators() {
+    local -a parts
+    [[ -n ${hook_com[unstaged]} ]] && parts+=( '%F{yellow}✗%f' )
+    [[ -n ${hook_com[staged]}   ]] && parts+=( '%F{green}●%f' )
+    if git status --porcelain 2>/dev/null | grep -q '^??'; then
+        parts+=( '%F{cyan}…%f' )
+    fi
+    local stashed ahead behind
+    stashed=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+    (( stashed > 0 )) && parts+=( "%F{magenta}⚑${stashed}%f" )
+    if git rev-parse --abbrev-ref '@{upstream}' &>/dev/null; then
+        ahead=$(git rev-list --count '@{upstream}..HEAD' 2>/dev/null) || ahead=0
+        behind=$(git rev-list --count 'HEAD..@{upstream}' 2>/dev/null) || behind=0
+        (( ahead > 0 ))  && parts+=( "↑${ahead}" )
+        (( behind > 0 )) && parts+=( "↓${behind}" )
+    fi
+    (( ${#parts[@]} > 0 )) && hook_com[misc]=' '${(j: :)parts}
+}
+zstyle ':vcs_info:git*+set-message:*' hooks git-indicators
+
+# Python venv / conda env / pyenv (shown only when explicitly active, not global)
+_prompt_pyenv() {
+    local v
+    if [[ -n $VIRTUAL_ENV ]]; then
+        v=${VIRTUAL_ENV:t}
+    elif [[ -n $CONDA_DEFAULT_ENV && $CONDA_DEFAULT_ENV != "base" ]]; then
+        v=$CONDA_DEFAULT_ENV
+    elif command -v pyenv >/dev/null \
+         && { [[ -n $PYENV_VERSION ]] || pyenv local 2>/dev/null >/dev/null; }; then
+        v=$(pyenv version-name 2>/dev/null)
+        [[ $v == "system" ]] && v=""
+    fi
+    [[ -n $v ]] && print -n "%F{green}(${v})%f "
+}
+
+# Command duration on RPROMPT (only when ≥ 2s)
+preexec() { _cmd_start=$EPOCHSECONDS }
+_prompt_duration() {
+    [[ -z ${_cmd_start:-} ]] && { _cmd_dur=""; return; }
+    local d=$(( EPOCHSECONDS - _cmd_start ))
+    unset _cmd_start
+    if   (( d < 2 ));    then _cmd_dur=""
+    elif (( d < 60 ));   then _cmd_dur="${d}s"
+    elif (( d < 3600 )); then _cmd_dur="$((d/60))m$((d%60))s"
+    else                      _cmd_dur="$((d/3600))h$((d%3600/60))m"
+    fi
+}
+precmd() { vcs_info; _prompt_duration }
+
 setopt PROMPT_SUBST
+
+# Host segment: yellow @fqdn on SSH, hidden when local
 if [[ -n $SSH_CONNECTION || -n $SSH_TTY ]]; then
-    PROMPT='%F{yellow}%n@%M%f %F{blue}%2~%f%F{green}${vcs_info_msg_0_}%f %# '
+    _PROMPT_HOST=' %F{yellow}@%M%f'
 else
-    PROMPT='%n %F{blue}%2~%f%F{green}${vcs_info_msg_0_}%f %# '
+    _PROMPT_HOST=''
 fi
+
+PROMPT='$(_prompt_pyenv)%(?.%F{green}.%F{red})➜%f  %F{cyan}%1~%f${_PROMPT_HOST}${vcs_info_msg_0_}%(1j. %F{magenta}[bg %j]%f.) '
+RPROMPT='%F{8}${_cmd_dur}%f'
 
 # ---- pyenv ----
 if command -v pyenv >/dev/null; then
@@ -63,4 +127,13 @@ fi
 if command -v brew >/dev/null && [ -f "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc" ]; then
     source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
     source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+fi
+
+# ---- zsh plugins: autosuggestions + syntax highlighting ----
+# Highlighting MUST be sourced last (zsh-syntax-highlighting upstream guidance).
+if command -v brew >/dev/null; then
+    [ -r "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && \
+        source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    [ -r "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && \
+        source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
