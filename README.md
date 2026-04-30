@@ -5,10 +5,12 @@ Personal macOS configs and a one-command bootstrap.
 ## Quick start
 
 ```bash
-git clone git@github.com:bigcrunsh/dotfiles ~/dotfiles
-cd ~/dotfiles
+git clone git@github.com:bigcrunsh/dotfiles
+cd dotfiles
 ./pin
 ```
+
+(Clone wherever you keep your repos — `pin` resolves its own location, so it works regardless of clone path.)
 
 The script is idempotent — safe to re-run.
 

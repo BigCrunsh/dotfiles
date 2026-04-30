@@ -1,4 +1,4 @@
-# Install on a new Mac with: brew bundle --file=~/dotfiles/Brewfile
+# Install on a new Mac: from the repo directory, run `brew bundle`
 
 # CLI essentials
 brew "tmux"
