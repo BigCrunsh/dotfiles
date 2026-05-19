@@ -137,3 +137,4 @@ if command -v brew >/dev/null; then
     [ -r "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && \
         source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
+export PATH="$HOME/.local/bin:$PATH"
