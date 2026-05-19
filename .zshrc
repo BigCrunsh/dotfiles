@@ -1,8 +1,11 @@
 # ---- tmux ----
-# Auto-attach when not already inside tmux. No exec, so a tmux failure
-# falls through to a normal zsh prompt instead of killing the terminal.
+# Auto-attach when not already inside tmux. -CC enables iTerm's native
+# tmux integration: each tmux window becomes a real iTerm tab, so Cmd-T
+# creates a new tmux window instead of duplicating the current session.
+# No exec, so a tmux failure falls through to a normal zsh prompt
+# instead of killing the terminal.
 if [[ -z $TMUX ]] && command -v tmux >/dev/null; then
-    tmux attach || tmux new-session
+    tmux -CC attach || tmux -CC new-session
 fi
 
 # ---- PATH / locale / editor ----
