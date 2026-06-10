@@ -38,6 +38,12 @@ The script is idempotent — safe to re-run.
 - Open a new terminal so the new shell config loads.
 - In 1Password → Settings → Developer → toggle **Use the SSH agent**.
 - For per-machine SSH host overrides, create `~/.ssh/config.local` (gitignored).
+- In iTerm → Settings (⌘,) → Keys → Key Bindings → `+`, add two entries so `⌘T`/`⌘N` don't auto-attach a second client to the same tmux session (which causes duplicated I/O):
+
+  | Shortcut | Action | Value | What it does |
+  |---|---|---|---|
+  | `⌘T` | Send Hex Codes | `0x1 0x63` | Sends `prefix c` → new tmux window |
+  | `⌘N` | Ignore | *(none)* | `⌘N` becomes a no-op |
 
 ## Cheat sheet
 
