@@ -15,8 +15,11 @@ Notes:
   - Deletes LOCAL branches only.
   - Skips the current branch, the default branch, and protected names
     (stable, develop, release-*).
-  - Uses 'git branch -d', which refuses to delete branches with unmerged
-    commits. To force, run 'git branch -D <branch>' manually.
+  - Detects true merges, fast-forwards, and squash/rebase merges (where the
+    branch's diff is already in the default branch under a new commit).
+  - True merges are removed with 'git branch -d'. Squash/rebase merges are
+    removed with 'git branch -D', since 'git branch -d' refuses them even
+    though their changes are fully present in the default branch.
 EOF
 }
 
@@ -51,20 +54,48 @@ git fetch --all --prune --quiet
 
 protected="^($default_branch|stable|develop|release-.*)$"
 
-merged=$(git branch --merged "$default_branch" --format='%(refname:short)' \
+# Branches checked out in any worktree (including the current one) cannot be
+# deleted by git, so collect them up front and skip them.
+worktree_branches=$(git worktree list --porcelain \
+  | sed -n 's@^branch refs/heads/@@p')
+
+# A branch counts as merged if its tip is an ancestor of the default branch
+# (true merge / fast-forward) OR its combined diff already exists in the default
+# branch (squash or rebase merge, which `git branch --merged` cannot detect).
+is_merged() {
+  local branch="$1"
+  if git merge-base --is-ancestor "$branch" "$default_branch"; then
+    return 0
+  fi
+  local mb tree synth
+  mb=$(git merge-base "$default_branch" "$branch")
+  tree=$(git rev-parse "$branch^{tree}")
+  synth=$(git commit-tree "$tree" -p "$mb" -m _)
+  [[ "$(git cherry "$default_branch" "$synth")" == "-"* ]]
+}
+
+candidates=()
+while IFS= read -r branch; do
+  candidates+=("$branch")
+done < <(git branch --format='%(refname:short)' \
   | grep -Ev "$protected" \
   | grep -Fxv "$current_branch" \
-  | sed '/^$/d' || true)
+  | grep -Fxvf <(printf '%s\n' "$worktree_branches") \
+  | sed '/^$/d')
 
-if [ -z "$merged" ]; then
-  echo "No merged branches to delete."
-  exit 0
-fi
-
-while IFS= read -r branch; do
+found=0
+for branch in ${candidates[@]+"${candidates[@]}"}; do
+  is_merged "$branch" || continue
+  found=1
   if [ "$dry_run" -eq 1 ]; then
     echo "[dry-run] would delete: $branch"
-  else
+  elif git merge-base --is-ancestor "$branch" "$default_branch"; then
     git branch -d "$branch"
+  else
+    git branch -D "$branch"
   fi
-done <<< "$merged"
+done
+
+if [ "$found" -eq 0 ]; then
+  echo "No merged branches to delete."
+fi
